@@ -3,6 +3,7 @@
 #include <string.h>
 #include "array_utils.h"
 
+
 int areEqual(ArrayUtil a, ArrayUtil b){
 	int count=0;
 	if(a.length==b.length && a.typeSize==b.typeSize){
@@ -15,6 +16,8 @@ int areEqual(ArrayUtil a, ArrayUtil b){
 		return 1;
 	return 0;
 };
+
+
 
 ArrayUtil create(int typeSize, int length) {
 	ArrayUtil array;
@@ -46,54 +49,72 @@ int findIndex(ArrayUtil util, int element){
 	if(count>0)
 		return index;
 	return -1;
-}
+};
+
+int isEven(void* hint, void* item){
+	return (*(int *)item%2)==0;
+};
+
+
+int isDivisible(void* hint, void* item){
+	return (*(int *)item % *(int *)hint ==0);
+};
+
+void* findFirst(ArrayUtil util, MatchFunc* match, void* hint){
+	int index=0;
+	void *item;
+	for(int i = 0;i<util.length;i++){
+		item = &util.base[i];
+		if(match(hint,item)){
+			index=i;
+			return (item);
+		}
+	}
+	return NULL;	
+};
+void* findLast(ArrayUtil util, MatchFunc* match, void* hint){
+	int index=0, count=0;
+	void *item;
+	for(int i=0;i<util.length;i++){
+		item= &util.base[i];
+		if(match(hint,item)){
+			index=i;
+			count++;
+		}
+	}
+	if(count)
+		return item;
+	return NULL;
+};
+
+int count(ArrayUtil util, MatchFunc* match, void* hint){
+	int count=0;
+	for(int i=0;i<util.length;i++){
+		void *item= &util.base[i];
+		if(match(hint,item)){
+			count++;
+		}
+	}
+	if(count)
+		return count;
+	return 0;
+};
+
+int filter(ArrayUtil util, MatchFunc* match, void *hint, void** dest, int maxItems ){
+	ArrayUtil *destination = *dest;
+	int count=0;
+	for(int i=0;i<util.length;i++){
+		void *item= &util.base[i];
+		if(match(hint,item)){
+			destination->base[count]=util.base[i];
+	 		count++;
+		}
+		if(count==maxItems)
+			break;
+	}
+	return count;
+};
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-
-// int main()
-// {
-//    char *str;
-
-//    str = (char *) malloc(0);
-//    strcpy(str, "dont worry about...");
-//    printf("String = %s,  Address = %u\n", str, str);
-
-//    str = (char *) realloc(str, 15);
-//    strcat(str, "anything");
-//    printf("String = %s,  Address = %u\n", str, str);
-
-//    free(str);
-   
-//    return(0);
-// }
