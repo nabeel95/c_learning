@@ -51,29 +51,21 @@ int findIndex(ArrayUtil util, int element){
 	return -1;
 };
 
-int isEven(void* hint, void* item){
-	return (*(int *)item%2)==0;
-};
-
-
-int isDivisible(void* hint, void* item){
-	return (*(int *)item % *(int *)hint ==0);
-};
 
 void* findFirst(ArrayUtil util, MatchFunc* match, void* hint){
-	int index=0;
+	int index=0,count=0,*notThere=NULL;
 	void *item;
 	for(int i = 0;i<util.length;i++){
 		item = &util.base[i];
 		if(match(hint,item)){
-			index=i;
-			return (item);
+			return item;
+			exit(0);
 		}
 	}
-	return NULL;	
+	return notThere;	
 };
 void* findLast(ArrayUtil util, MatchFunc* match, void* hint){
-	int index=0, count=0;
+	int index=0,count=0,*notThere=NULL;
 	void *item;
 	for(int i=0;i<util.length;i++){
 		item= &util.base[i];
@@ -82,9 +74,9 @@ void* findLast(ArrayUtil util, MatchFunc* match, void* hint){
 			count++;
 		}
 	}
-	if(count)
-		return item;
-	return NULL;
+	if(count>0)
+		return util.base+index;
+	return notThere;
 };
 
 int count(ArrayUtil util, MatchFunc* match, void* hint){
@@ -114,6 +106,40 @@ int filter(ArrayUtil util, MatchFunc* match, void *hint, void** dest, int maxIte
 	}
 	return count;
 };
+
+void map(ArrayUtil source, ArrayUtil destination, ConvertFunc* convert, void* hint){
+		int count=0,i;
+		for(i=0;i<source.length;i++){
+			convert(hint,source.base+i,destination.base+i);
+		}
+};
+
+void forEach(ArrayUtil util, OperationFunc* operation, void* hint){
+	int count=0,i;
+	for(i=0;i<util.length;i++){
+		operation(hint,util.base+i);
+		printf("%d\n",util.base[i] );
+	}
+};
+
+// void* ReducerFunc(void* hint, void* previousItem, void* item);
+
+void *reduce(ArrayUtil util, ReducerFunc * reducer, void *hint, void *initialValue){
+  void *item = util.base,*prevItem = initialValue;
+  for(int i = 0; i < util.length; i++){
+  	void *pointer = reducer(hint, prevItem, item);
+    prevItem = pointer;
+    item = item + util.typeSize;
+  };
+  return prevItem;
+};
+
+
+
+
+
+
+
 
 
 
