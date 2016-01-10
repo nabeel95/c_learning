@@ -8,7 +8,7 @@ int areEqual(ArrayUtil a, ArrayUtil b){
 	int count=0;
 	if(a.length==b.length && a.typeSize==b.typeSize){
 		for(int i = 0;i<a.length;i++){
-			if(a.base[i] == b.base[i])
+			if(*((unsigned char*)a.base+i*a.typeSize) == *((unsigned char*)b.base+i*b.typeSize))
 				count++;
 		}
 	}
@@ -37,17 +37,10 @@ void dispose(ArrayUtil util){
 		free(util.base);		
 };
 
-int findIndex(ArrayUtil util, int element){
-	int count=0;
-	int index=0;
+int findIndex(ArrayUtil util, void* element){
 	for(int i=0;i<util.length;i++){
-		if(util.base[i]==element){
-			index=i;
-			count++;
-		}
+		if(*((unsigned char*)util.base+i*util.typeSize) - *(unsigned char *)element==0) return i;
 	}
-	if(count>0)
-		return index;
 	return -1;
 };
 
@@ -118,7 +111,6 @@ void forEach(ArrayUtil util, OperationFunc* operation, void* hint){
 	int count=0,i;
 	for(i=0;i<util.length;i++){
 		operation(hint,util.base+i);
-		printf("%d\n",util.base[i] );
 	}
 };
 

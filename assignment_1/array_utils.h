@@ -20,7 +20,7 @@ int areEqual(ArrayUtil a, ArrayUtil b);
 
 void dispose(ArrayUtil util);
 
-int findIndex(ArrayUtil util, int element);
+int findIndex(ArrayUtil util, void* element);
 
 int isEven(void* hint, void* item);
 int isDivisible(void* hint, void* item);
